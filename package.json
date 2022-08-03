@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "canvacord": "^5.4.3",
-    "discord.js": "^14.1.2"
+    "discord.js": "^14.1.2",
+    "dotenv": "^16.0.1"
   }
 }
