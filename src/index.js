@@ -16,8 +16,8 @@ const client = new Client({
     }]
   }
 });
-
-const dbClient = require("@replit/database")();
+const DBClient = require("@replit/database")
+const dbClient = new DBClient();
 client.on('ready', async () => {
   console.log(`Logged in as: ${client.user?.tag}`);
 
@@ -29,14 +29,14 @@ client.on('ready', async () => {
 
   client.texts = require('../texts.json');
   client.dbClient = dbClient
-  try{
+  try {
     client.guildConfig = require('../guildConfig.json');
   } catch (e) { client.guildConfig = {} }
   try {
     client.data = require('../data.json');
   } catch (e) { client.data = {} }
 
-  (await dbClient.list()).forEach(key => {
+  (await dbClient.list()).forEach(async key => {
     client.data[key] = await dbClient.get(key)
   });
 
@@ -68,9 +68,9 @@ process.on('exit', () => {
 const server = require('http').createServer().listen(8080);
 server.on('request', (req, res) => {
   console.log("Running " + req.method + " \"" + req.url + "\" for " + req.socket.remoteAddress + " at " + new Date())
-  if(req.url == "/invite") {
+  if (req.url == "/invite") {
     res.writeHead(302, {
-      'Location': client.generateInvite({scopes: [OAuth2Scopes.Bot, OAuth2Scopes.ApplicationsCommands], permissions: ['Administrator']})
+      'Location': client.generateInvite({ scopes: [OAuth2Scopes.Bot, OAuth2Scopes.ApplicationsCommands], permissions: ['Administrator'] })
     });
     res.end();
     return
@@ -82,6 +82,6 @@ server.on('request', (req, res) => {
 
 setInterval(() => {
   https.request("https://Discord-AutoRoles.goteuszmaszyk.repl.co").end()
-}, 1000)
+}, 30 * 1000)
 
 client.login(token);

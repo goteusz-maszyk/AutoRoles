@@ -19,7 +19,7 @@ module.exports = async (client, message) => {
 
     const channel = message.guild.channels.cache.get(guildConfig[message.guildId].levelup_channel)
 
-    channel.send(texts.level_up.replace("%level%", level + 1))
+    channel.send(texts.level_up.replace("%level%", level + 1).replace("%user%", "<@" + message.author.id + ">"))
 
     const roleId = guildConfig[message.guildId].roles[String(level + 1)]
     if (!roleId) return
