@@ -9,7 +9,7 @@ module.exports = async (client, message) => {
   if (message.author.bot) return
   if (!message.guild) return
   if (!data[message.guild.id + "-" + message.author.id]) data[message.guild.id + "-" + message.author.id] = { level: 0, xp: 0 }
-  data[message.guild.id + "-" + message.author.id].xp += 20
+  data[message.guild.id + "-" + message.author.id].xp += randomIntFromInterval(13, 27)
   const { level, xp } = data[message.guild.id + "-" + message.author.id]
   const requiredXp = 5 * (level ** 2) + (50 * level) + 100
 
@@ -30,4 +30,8 @@ module.exports = async (client, message) => {
     }
     message.member.roles.add(roleToAdd)
   }
+}
+
+function randomIntFromInterval(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min)
 }
