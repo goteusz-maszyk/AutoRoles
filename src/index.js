@@ -17,7 +17,8 @@ const client = new Client({
   }
 });
 
-client.on('ready', () => {
+const dbClient = require("@replit/database")();
+client.on('ready', async () => {
   console.log(`Logged in as: ${client.user?.tag}`);
 
   client.application?.commands.create({
@@ -27,12 +28,17 @@ client.on('ready', () => {
   })
 
   client.texts = require('../texts.json');
+  client.dbClient = dbClient
   try{
     client.guildConfig = require('../guildConfig.json');
   } catch (e) { client.guildConfig = {} }
   try {
     client.data = require('../data.json');
   } catch (e) { client.data = {} }
+
+  (await dbClient.list()).forEach(key => {
+    client.data[key] = await dbClient.get(key)
+  });
 
   const events = fs.readdirSync(`src/events`).filter(d => d.endsWith('.js'));
   for (let file of events) {
@@ -51,6 +57,10 @@ process.on('SIGINT', function () {
 process.on('exit', () => {
   client.user.setStatus("invisible")
   client.destroy()
+
+  Object.keys(client.data).forEach(key => {
+    dbClient.set(key, client.data[key])
+  })
 
   fs.writeFileSync('data.json', JSON.stringify(client.data));
 })
@@ -71,7 +81,7 @@ server.on('request', (req, res) => {
 })
 
 setInterval(() => {
-  https.request("https://Discord-AutoRoles.goteuszmaszyk.repl.co")
-}, 60 * 1000)
+  https.request("https://Discord-AutoRoles.goteuszmaszyk.repl.co").end()
+}, 1000)
 
 client.login(token);
