@@ -54,4 +54,11 @@ process.on('exit', () => {
   fs.writeFileSync('data.json', JSON.stringify(client.data));
 })
 
+const server = require('http').createServer().listen(8080);
+server.on('request', (req, res) => {
+  res.write("I'm alive\nPath: ");
+  res.write(req.url)
+  res.end();
+})
+
 client.login(token);
